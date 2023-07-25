@@ -1,7 +1,5 @@
 package model;
 
-import lombok.Data;
-
 public enum Tool {
     CHNS("CHNS", "Chainsaw", "Stihl", 1.49, true, false, true),
     LADW("LADW","Ladder", "Werner", 1.99, true, true, false),
