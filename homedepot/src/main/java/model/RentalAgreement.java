@@ -2,6 +2,7 @@ package model;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Data
@@ -12,10 +13,10 @@ public class RentalAgreement {
     private int rentalDays;
     private LocalDate checkoutDate;
     private LocalDate dueDate;
-    private double dailyRentalCharge;
+    private BigDecimal dailyRentalCharge;
     private int chargeDays;
-    private double preDiscountCharge;
+    private BigDecimal preDiscountCharge;
     private int discountPercent;
-    private double discountAmount;
-    private double finalCharge;
+    private BigDecimal discountAmount;
+    private BigDecimal finalCharge;
 }

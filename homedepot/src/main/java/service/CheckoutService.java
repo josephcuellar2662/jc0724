@@ -3,6 +3,8 @@ package service;
 import model.RentalAgreement;
 import model.Tool;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -33,12 +35,13 @@ public class CheckoutService {
             rentalAgreement.setChargeDays(countChargeDays(tool, checkoutDate, numberOfDays));
 
             double preDiscountCharge = calculatePreDiscountCharge(tool, chargeDays);
-            rentalAgreement.setPreDiscountCharge(calculatePreDiscountCharge(tool, chargeDays));
+            rentalAgreement.setPreDiscountCharge(new BigDecimal(preDiscountCharge).setScale(2, RoundingMode.HALF_UP));
 
             double discountAmount = calculateDiscountAmount(discount, preDiscountCharge);
-            rentalAgreement.setDiscountAmount(calculateDiscountAmount(discount, preDiscountCharge));
+            rentalAgreement.setDiscountAmount(new BigDecimal(discountAmount).setScale(2, RoundingMode.HALF_UP));
 
-            rentalAgreement.setFinalCharge(preDiscountCharge - discountAmount);
+            double finalCharge = preDiscountCharge - discountAmount;
+            rentalAgreement.setFinalCharge(new BigDecimal(finalCharge).setScale(2, RoundingMode.HALF_UP));
 
             printRentalAgreement(rentalAgreement);
 
@@ -63,10 +66,10 @@ public class CheckoutService {
 
         System.out.println("Daily rental charge: $" + rentalAgreement.getDailyRentalCharge());
         System.out.println("Charge days: " + rentalAgreement.getChargeDays());
-        System.out.println("Pre-discount charge: $" + String.format("%.2f", rentalAgreement.getPreDiscountCharge()));
+        System.out.println("Pre-discount charge: $" + rentalAgreement.getPreDiscountCharge());
         System.out.println("Discount percent: " + rentalAgreement.getDiscountPercent() + "%");
-        System.out.println("Discount amount: " + String.format("%.2f", rentalAgreement.getDiscountAmount()));
-        System.out.println("Final Charge: $" + String.format("%.2f", rentalAgreement.getFinalCharge()));
+        System.out.println("Discount amount: " + rentalAgreement.getDiscountAmount());
+        System.out.println("Final Charge: $" + rentalAgreement.getFinalCharge());
 
 
     }
@@ -121,7 +124,7 @@ public class CheckoutService {
     }
 
     private double calculatePreDiscountCharge(Tool tool, int chargeDays) {
-        return tool.getDailyCharge() * chargeDays;
+        return tool.getDailyCharge().doubleValue() * chargeDays;
     }
 
     private double calculateDiscountAmount(int discount, double preDiscountCharge) {
