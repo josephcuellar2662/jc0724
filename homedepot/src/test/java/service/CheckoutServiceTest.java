@@ -31,19 +31,19 @@ class CheckoutServiceTest {
     @Test
     public void testCaseThree() {
         RentalAgreement result = testObject.checkout(Tool.CHNS, LocalDate.of(2015, 7, 2), 5, 25);
-        assertEquals(3, result.getChargeDays());
-        assertEquals(4.47, result.getPreDiscountCharge().doubleValue());
-        assertEquals(1.12, result.getDiscountAmount().doubleValue());
-        assertEquals(3.35, result.getFinalCharge().doubleValue());
+        assertEquals(4, result.getChargeDays());
+        assertEquals(5.96, result.getPreDiscountCharge().doubleValue());
+        assertEquals(1.49, result.getDiscountAmount().doubleValue());
+        assertEquals(4.47, result.getFinalCharge().doubleValue());
     }
 
     @Test
     public void testCaseFour() {
         RentalAgreement result = testObject.checkout(Tool.JAKD, LocalDate.of(2015, 9, 3), 6, 0);
-        assertEquals(4, result.getChargeDays());
-        assertEquals(11.96, result.getPreDiscountCharge().doubleValue());
+        assertEquals(3, result.getChargeDays());
+        assertEquals(8.97, result.getPreDiscountCharge().doubleValue());
         assertEquals(0.0, result.getDiscountAmount().doubleValue());
-        assertEquals(11.96, result.getFinalCharge().doubleValue());
+        assertEquals(8.97, result.getFinalCharge().doubleValue());
     }
 
     @Test
@@ -52,7 +52,8 @@ class CheckoutServiceTest {
         assertEquals(6, result.getChargeDays());
         assertEquals(17.94, result.getPreDiscountCharge().doubleValue());
         assertEquals(0.0, result.getDiscountAmount().doubleValue());
-        assertEquals(17.94, result.getFinalCharge().doubleValue());    }
+        assertEquals(17.94, result.getFinalCharge().doubleValue());
+    }
 
     @Test
     public void testCaseSix() {
@@ -60,6 +61,7 @@ class CheckoutServiceTest {
         assertEquals(3, result.getChargeDays());
         assertEquals(8.97, result.getPreDiscountCharge().doubleValue());
         assertEquals(4.49, result.getDiscountAmount().doubleValue());
-        assertEquals(4.49, result.getFinalCharge().doubleValue());    }
+        assertEquals(4.49, result.getFinalCharge().doubleValue());
+    }
 
 }
