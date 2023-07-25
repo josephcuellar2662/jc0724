@@ -1,5 +1,6 @@
 package service;
 
+import model.RentalAgreement;
 import model.Tool;
 
 import java.time.DayOfWeek;
@@ -13,40 +14,60 @@ import static validations.CheckoutServiceValidations.validateRentalDayCount;
 
 public class CheckoutService {
 
-    public void checkout(Tool tool, LocalDate checkoutDate, int numberOfDays, int discount) {
-
+    public RentalAgreement checkout(Tool tool, LocalDate checkoutDate, int numberOfDays, int discount) {
+        RentalAgreement rentalAgreement = new RentalAgreement();
         try {
             validateRentalDayCount(numberOfDays);
             validateDiscountPercentage(discount);
 
-            System.out.println("Tool code: " + tool.getToolCode());
-            System.out.println("Tool type: " + tool.getToolType());
-            System.out.println("Tool brand: " + tool.getBrand());
-            System.out.println("Rental days: " + numberOfDays);
-            System.out.println("Check out date: " + checkoutDate);
-
-            DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT);
-            String formattedDate = formatter.format(checkoutDate.plusDays(numberOfDays));
-            System.out.println("Due date: " + formattedDate);
-
-
-            System.out.println("Daily rental charge: $" + tool.getDailyCharge());
+            rentalAgreement.setToolCode(tool.getToolCode());
+            rentalAgreement.setToolType(tool.getToolType());
+            rentalAgreement.setToolBrand(tool.getBrand());
+            rentalAgreement.setRentalDays(numberOfDays);
+            rentalAgreement.setCheckoutDate(checkoutDate);
+            rentalAgreement.setDueDate(checkoutDate.plusDays(numberOfDays));
+            rentalAgreement.setDailyRentalCharge(tool.getDailyCharge());
+            rentalAgreement.setDiscountPercent(discount);
 
             int chargeDays = countChargeDays(tool, checkoutDate, numberOfDays);
-            System.out.println("Charge days: " + chargeDays);
+            rentalAgreement.setChargeDays(countChargeDays(tool, checkoutDate, numberOfDays));
 
             double preDiscountCharge = calculatePreDiscountCharge(tool, chargeDays);
-            System.out.println("Pre-discount charge: $" + String.format("%.2f", preDiscountCharge));
-            System.out.println("Discount percent: " + discount + "%");
+            rentalAgreement.setPreDiscountCharge(calculatePreDiscountCharge(tool, chargeDays));
 
             double discountAmount = calculateDiscountAmount(discount, preDiscountCharge);
-            System.out.println("Discount amount: " + String.format("%.2f", discountAmount));
+            rentalAgreement.setDiscountAmount(calculateDiscountAmount(discount, preDiscountCharge));
 
-            System.out.println("Final Charge: $" + String.format("%.2f", (preDiscountCharge - discountAmount)));
+            rentalAgreement.setFinalCharge(preDiscountCharge - discountAmount);
+
+            printRentalAgreement(rentalAgreement);
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
+            return null;
         }
+
+        return rentalAgreement;
+    }
+
+    private void printRentalAgreement(RentalAgreement rentalAgreement) {
+        System.out.println("Tool code: " + rentalAgreement.getToolCode());
+        System.out.println("Tool type: " + rentalAgreement.getToolType());
+        System.out.println("Tool brand: " + rentalAgreement.getToolBrand());
+        System.out.println("Rental days: " + rentalAgreement.getRentalDays());
+        System.out.println("Check out date: " + rentalAgreement.getCheckoutDate());
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT);
+        String formattedDueDate = formatter.format(rentalAgreement.getCheckoutDate().plusDays(rentalAgreement.getRentalDays()));
+        System.out.println("Due date: " + formattedDueDate);
+
+        System.out.println("Daily rental charge: $" + rentalAgreement.getDailyRentalCharge());
+        System.out.println("Charge days: " + rentalAgreement.getChargeDays());
+        System.out.println("Pre-discount charge: $" + String.format("%.2f", rentalAgreement.getPreDiscountCharge()));
+        System.out.println("Discount percent: " + rentalAgreement.getDiscountPercent() + "%");
+        System.out.println("Discount amount: " + String.format("%.2f", rentalAgreement.getDiscountAmount()));
+        System.out.println("Final Charge: $" + String.format("%.2f", rentalAgreement.getFinalCharge()));
+
 
     }
 
@@ -69,12 +90,10 @@ public class CheckoutService {
             }
 
         }
-
         return count;
     }
 
     private boolean checkIsWeekend(String dayOfWeek) {
-
         if (dayOfWeek.equalsIgnoreCase("SATURDAY") || dayOfWeek.equalsIgnoreCase("SUNDAY")) {
             return true;
         }
@@ -102,7 +121,6 @@ public class CheckoutService {
     }
 
     private double calculatePreDiscountCharge(Tool tool, int chargeDays) {
-
         return tool.getDailyCharge() * chargeDays;
     }
 
@@ -110,8 +128,8 @@ public class CheckoutService {
         return preDiscountCharge * ((double)discount/100);
     }
 
-    public static void main(String args[]) {
-        CheckoutService checkoutService = new CheckoutService();
-        checkoutService.checkout(Tool.JAKR, LocalDate.now(), 5, 100);
-    }
+//    public static void main(String args[]) {
+//        CheckoutService checkoutService = new CheckoutService();
+//        checkoutService.checkout(Tool.JAKR, LocalDate.now(), 5, 100);
+//    }
 }
